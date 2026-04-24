@@ -1,12 +1,34 @@
-if __name__ == "__main__":
-    print("=== CYBER ARCHIVES - DATA RECOVERY SYSTEM ===\n")
-    print("Accessing Storage Vault: ancient_fragment.txt")
+import sys
+
+
+def main() -> None:
+    if len(sys.argv) != 2:
+        print("Usage: ft_ancient_text.py <file>")
+        return
+
+    filename = sys.argv[1]
+    print("=== Cyber Archives Recovery ===")
+    print(f"Accessing file '{filename}'")
+
     try:
-        with open("ancient_fragment.txt", 'r') as file:
-            print("Connection established...\n")
-            print("RECOVERED DATA:")
-            print(file.read())
-            print()
-            print("Data recovery complete. Storage unit disconnected.")
-    except OSError:
-        print("ERROR: Storage vault not found")
+        f = open(filename, "r")
+    except OSError as e:
+        print(f"Error opening file '{filename}': {e}")
+        return
+
+    try:
+        print("---")
+        data = f.read()
+        sys.stdout.write(data)
+        if len(data) > 0 and not data.endswith("\n"):
+            sys.stdout.write("\n")
+        print("---")
+    finally:
+        try:
+            f.close()
+        finally:
+            print(f"File '{filename}' closed.")
+
+
+if __name__ == "__main__":
+    main()

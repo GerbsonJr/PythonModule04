@@ -1,17 +1,73 @@
-if __name__ == "__main__":
-    print("=== CYBER ARCHIVES - PRESERVATION SYSTEM ===\n")
-    print("Initializing new storage unit: new_discovery.txt")
+import sys
+
+
+def transform_add_hash_per_line(text: str) -> str:
+    lines = text.splitlines(True)
+    out = []
+    for line in lines:
+        if line.endswith("\n"):
+            out.append(line[:-1] + "#\n")
+        else:
+            out.append(line + "#")
+    return "".join(out)
+
+
+def main() -> None:
+    if len(sys.argv) != 2:
+        print("Usage: ft_archive_creation.py <file>")
+        return
+
+    filename = sys.argv[1]
+    print("=== Cyber Archives Recovery & Preservation ===")
+    print(f"Accessing file '{filename}'")
+
     try:
-        with open("new_discovery.txt", 'w') as file:
-            print("Storage unit created successfully...\n")
-            print("Inscribing preservation data...")
-            file.write("[ENTRY 001] New quantum algorithm discovered\n")
-            file.write("[ENTRY 002] Efficiency increased by 347%\n")
-            file.write("[ENTRY 003] Archived by Data Archivist trainee\n")
-        with open("new_discovery.txt", 'r') as file:
-            print(file.read())
-            print("Data inscription complete. Storage unit sealed.")
-            print("Archive 'new_discovery.txt' "
-                  "ready for long-term preservation.")
-    except OSError:
-        print("ERROR: Storage vault not found")
+        f = open(filename, "r")
+    except OSError as e:
+        print(f"Error opening file '{filename}': {e}")
+        return
+
+    try:
+        print("---")
+        original = f.read()
+        sys.stdout.write(original)
+        if len(original) > 0 and not original.endswith("\n"):
+            sys.stdout.write("\n")
+        print("---")
+    finally:
+        try:
+            f.close()
+        finally:
+            print(f"File '{filename}' closed.")
+
+    print("Transform data:")
+    transformed = transform_add_hash_per_line(original)
+    print("---")
+    sys.stdout.write(transformed)
+    if len(transformed) > 0 and not transformed.endswith("\n"):
+        sys.stdout.write("\n")
+    print("---")
+
+    new_name = input("Enter new file name (or empty): ")
+    if new_name == "":
+        print("Not saving data.")
+        return
+
+    print(f"Saving data to '{new_name}'")
+    try:
+        out = open(new_name, "w")
+    except OSError as e:
+        print(f"Error opening file '{new_name}': {e}")
+        print("Data not saved.")
+        return
+
+    try:
+        out.write(transformed)
+    finally:
+        out.close()
+
+    print(f"Data saved in file '{new_name}'.")
+
+
+if __name__ == "__main__":
+    main()
